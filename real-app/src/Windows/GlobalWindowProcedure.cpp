@@ -1,6 +1,7 @@
 #include "GlobalWindowProcedure.h"
 
 #include <cassert>
+#include <stdexcept>
 
 using namespace miniant::Windows;
 

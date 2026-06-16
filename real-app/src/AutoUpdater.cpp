@@ -2,16 +2,22 @@
 
 #include "Windows/Filesystem.h"
 
+#if REAL_ENABLE_UPDATER
 #include "CurlWrapper/Writers/CurlFileWriter.h"
 #include "CurlWrapper/Writers/CurlMemoryWriter.h"
+#endif
 
 #include <nlohmann/json.hpp>
 
 using namespace miniant::AutoUpdater;
+#if REAL_ENABLE_UPDATER
 using namespace miniant::CurlWrapper;
+#endif
 using namespace miniant::Windows::Filesystem;
 
 using json = nlohmann::json;
+
+#if REAL_ENABLE_UPDATER
 
 tl::expected<std::tuple<Version, json>, AutoUpdaterError> GetUpdaterRelease(CurlHandle& curl) {
     curl.Reset();
@@ -209,3 +215,35 @@ tl::expected<void, AutoUpdaterError> AutoUpdater::ApplyUpdate(const UpdateInfo& 
 
     return {};
 }
+
+#else
+
+AutoUpdater::AutoUpdater() = default;
+AutoUpdater::~AutoUpdater() = default;
+
+std::optional<std::string> AutoUpdater::IsAppSuperseded() {
+    return {};
+}
+
+tl::expected<bool, AutoUpdaterError> AutoUpdater::CleanupPreviousSetup() {
+    const WindowsString executableToDelete = GetExecutablePath() + L"~DELETE";
+    if (IsFile(executableToDelete)) {
+        if (!DeleteFile(executableToDelete)) {
+            return tl::make_unexpected(AutoUpdaterError("Could not delete temporary file."));
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+tl::expected<UpdateInfo, AutoUpdaterError> AutoUpdater::GetUpdateInfo() const {
+    return tl::make_unexpected(AutoUpdaterError("Automatic updates are disabled in this build."));
+}
+
+tl::expected<void, AutoUpdaterError> AutoUpdater::ApplyUpdate(const UpdateInfo&) const {
+    return tl::make_unexpected(AutoUpdaterError("Automatic updates are disabled in this build."));
+}
+
+#endif

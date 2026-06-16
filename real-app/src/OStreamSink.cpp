@@ -1,5 +1,7 @@
 #include "OStreamSink.h"
 
+#include <ostream>
+
 using namespace miniant::Spdlog;
 
 OStreamSink::OStreamSink(std::shared_ptr<std::ostream> outputStream, bool forceFlush):
