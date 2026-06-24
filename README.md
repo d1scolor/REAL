@@ -14,7 +14,7 @@
 ## Requirements
 
 * Windows 10 64-bit
-* [Microsoft Visual C++ 2017 Redistributable (x64)](https://aka.ms/vs/15/release/VC_redist.x64.exe) 
+* Microsoft Visual C++ 2015-2022 Redistributable (x64)
 
 ## Setup
 
